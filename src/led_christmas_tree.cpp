@@ -16,10 +16,10 @@ uint8_t gHue = 0;
 void loop() {
     gHue = gHue % 360; // Faster
 
-    rgb_running_fade(6);
+    rgb_running_fade(15);
     rgb_running_fill(3, false);
     sparkle(15);
-    rgb_fade(6);
+    rgb_fade(15);
     rgb_running_fill(3, true);
 }
 
@@ -57,10 +57,10 @@ void sparkle(uint8_t cycle_count) {
     }
 }
 
-void rgb_running_fade(uint8_t cycle_count) {
+void rgb_running_fade(uint16_t cycle_time) {
     gHue = 0;
-    cycle_count = cycle_count * 360 * 100 * 10;  // gHue is in range 0 - 360
-    for (uint8_t i = 0; i < cycle_count; ++i) {
+    cycle_time = cycle_time * 50;  // convert to seconds
+    for (uint16_t i = 0; i < cycle_time; i++) {
         fill_rainbow(leds, NUM_LEDS, gHue, 255 / NUM_LEDS);
         FastLED.show();
         gHue = (gHue + 1) % 360;
@@ -68,12 +68,12 @@ void rgb_running_fade(uint8_t cycle_count) {
     }
 }
 
-void rgb_fade(uint8_t cycle_count) {
+void rgb_fade(uint16_t cycle_time) {
     gHue = 0;
-    cycle_count = cycle_count * 360 * 100 * 10;
-    for (uint8_t i = 0; i < cycle_count; i++) {
+    cycle_time = cycle_time * 50;  // convert to seconds
+    for (uint16_t i = 0; i < cycle_time; i++) {
         uint8_t pos = beatsin16(5,50,150); // generating the sinwave
-        fill_solid(leds, NUM_LEDS, CHSV( gHue, 255, pos)); // CHSV (hue, saturation, value);
+        fill_solid(leds, NUM_LEDS, CHSV( gHue, 255, pos));
         FastLED.show();
         gHue = (gHue + 1) % 360;
         delay(100);
