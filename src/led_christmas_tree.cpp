@@ -59,7 +59,7 @@ void sparkle(uint8_t cycle_count) {
 
 void rgb_running_fade(uint8_t cycle_count) {
     gHue = 0;
-    cycle_count = cycle_count * 360 * 10;  // gHue is in range 0 - 360
+    cycle_count = cycle_count * 360 * 100 * 10;  // gHue is in range 0 - 360
     for (uint8_t i = 0; i < cycle_count; ++i) {
         fill_rainbow(leds, NUM_LEDS, gHue, 255 / NUM_LEDS);
         FastLED.show();
@@ -70,7 +70,7 @@ void rgb_running_fade(uint8_t cycle_count) {
 
 void rgb_fade(uint8_t cycle_count) {
     gHue = 0;
-    cycle_count = cycle_count * 360 * 10;
+    cycle_count = cycle_count * 360 * 100 * 10;
     for (uint8_t i = 0; i < cycle_count; i++) {
         uint8_t pos = beatsin16(5,50,150); // generating the sinwave
         fill_solid(leds, NUM_LEDS, CHSV( gHue, 255, pos)); // CHSV (hue, saturation, value);

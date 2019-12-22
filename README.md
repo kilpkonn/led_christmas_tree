@@ -1,4 +1,4 @@
-#LED christmas tree
+# LED christmas tree
 
-TODO: tutorial
+TODO: tutorial  
 TODO: pictures
