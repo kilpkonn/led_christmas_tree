@@ -24,7 +24,7 @@ File > New Project > Arduino Sketch
 cp -a /path/to/cmake /path/to/cloned/repository/root
 cp /path/to/CMakeLists.txt /path/to/cloned/repository/root
 ```
-You can now close sketch project you created, no need to save.
+You can now close sketch project you created, no need to save.  
 5) Edit CMakeLists.txt  
 5.1) I had to remove `<@` and `@>` so it looked like `set(${PROJECT_NAME}_BOARD nano)`  
 5.2) Add `FastLED` library.
