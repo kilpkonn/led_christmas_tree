@@ -1,6 +1,9 @@
 # LED christmas tree
-
-TODO: pictures
+<p float="left">
+  <img src="./readme/tree1.jpg" width="33%" />
+  <img src="./readme/tree2.jpg" width="33%" /> 
+  <img src="./readme/tree3.jpg" width="33%" />
+</p>
 
 ## How to run:
 
