@@ -222,3 +222,7 @@ $RECYCLE.BIN/
 .idea/modules.xml
 .idea/vcs.xml
 cmake-build-debug/
+
+# I guess these should not be commited
+cmake
+CMakeLists.txt
