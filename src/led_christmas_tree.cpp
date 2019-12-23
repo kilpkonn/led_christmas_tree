@@ -16,10 +16,11 @@ uint8_t gHue = 0;
 void loop() {
     gHue = gHue % 360; // Faster
 
-    rgb_running_fade(15);
+    sparkle(60, true);
+    rgb_running_fade(60);
     rgb_running_fill(3, false);
-    sparkle(15);
-    rgb_fade(15);
+    sparkle(60, false);
+    rgb_fade(60);
     rgb_running_fill(3, true);
 }
 
@@ -45,12 +46,16 @@ void rgb_running_fill(uint8_t cycle_count, boolean colorful) {
     }
 }
 
-void sparkle(uint8_t cycle_count) {
+void sparkle(uint8_t cycle_count, boolean rgb) {
     for (uint8_t j = 0; j < cycle_count; j++) {
         FastLED.clear();
-        //TODO
-        for(uint8_t i = 0; i < NUM_LEDS / 15; i++) {
-            leds[random(NUM_LEDS)] = CRGB(230, 50, 100);
+        // Every n-th led
+        for(uint8_t i = 0; i < NUM_LEDS / 6; i++) {
+            if (rgb) {
+                leds[random(NUM_LEDS)] = CHSV(random(360), 255, 200);
+            } else {
+                leds[random(NUM_LEDS)] = CRGB(230, 50, 100);
+            }
         }
         FastLED.show();
         delay(1000);
