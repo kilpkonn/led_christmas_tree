@@ -11,17 +11,32 @@ void setup() {
     LEDS.addLeds<LED_TYPE, LED_PIN, COLOR_ORDER>(leds, NUM_LEDS);
 }
 
-uint8_t gHue = 0;
+uint16_t gHue = 0;
 
 void loop() {
     gHue = gHue % 360; // Faster
 
+    rgb_spiral_fill(3, 6);
     sparkle(60, true);
     rgb_running_fade(60);
     rgb_running_fill(3, false);
     sparkle(60, false);
     rgb_fade(60);
     rgb_running_fill(3, true);
+}
+
+void rgb_spiral_fill(uint8_t cycle_count, uint8_t colors_count) {
+    gHue = 0;
+    for (uint8_t i = 0; i < cycle_count; i++) {
+        for (uint8_t k = 0; k < colors_count; k++) {
+            for (uint8_t j = 0; j < NUM_LEDS; j++) {
+                leds[j] = CHSV(gHue, 255, 200);
+                FastLED.show();
+                delay(20);
+            }
+            gHue = (gHue + 360 / colors_count) % 360;
+        }
+    }
 }
 
 void rgb_running_fill(uint8_t cycle_count, boolean colorful) {
