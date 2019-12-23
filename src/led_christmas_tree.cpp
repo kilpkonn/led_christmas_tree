@@ -14,6 +14,16 @@ void setup() {
 
 uint16_t gHue = 0;
 
+void rgb_running_fill(uint8_t cycle_count, bool colorful, uint8_t tail_length);
+
+void sparkle(uint16_t cycle_count, const CHSV& color, bool continuous);
+
+void rgb_spiral_fill(uint8_t cycle_count, uint8_t colors_count, uint8_t splits_count);
+
+void rgb_running_fade(uint16_t cycle_time);
+
+void rgb_fade(uint16_t cycle_time);
+
 void loop() {
     gHue = gHue % 360; // Faster
 
@@ -27,6 +37,7 @@ void loop() {
     rgb_running_fill(3, true, 0);
     rgb_spiral_fill(60, 6, 1);
 }
+
 
 void rgb_spiral_fill(uint8_t cycle_count, uint8_t colors_count, uint8_t splits_count) {
     gHue = 0;
@@ -47,7 +58,7 @@ void rgb_spiral_fill(uint8_t cycle_count, uint8_t colors_count, uint8_t splits_c
     }
 }
 
-void rgb_running_fill(uint8_t cycle_count, boolean colorful, uint8_t tail_length) {
+void rgb_running_fill(uint8_t cycle_count, bool colorful, uint8_t tail_length) {
     gHue = 0;
     for (uint8_t j = 0; j < cycle_count; j++) {
         for (uint8_t n = 0; n < NUM_LEDS; n++) {
@@ -75,7 +86,7 @@ void rgb_running_fill(uint8_t cycle_count, boolean colorful, uint8_t tail_length
     }
 }
 
-void sparkle(uint16_t cycle_count, CHSV color, boolean continuous) {
+void sparkle(uint16_t cycle_count, const CHSV& color, bool continuous) {
     uint8_t every_nth = 6;
     cycle_count = cycle_count * every_nth;
 
