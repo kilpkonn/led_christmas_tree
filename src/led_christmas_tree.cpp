@@ -29,10 +29,13 @@ void spiral_tail(uint16_t cycle_time, const CHSV &color);
 
 void spiral_falloff(uint16_t cycle_time);
 
+void shiny_peak(uint8_t cycle_count);
+
 void loop() {
     gHue = gHue % 360; // Faster
 
     //spiral_tail(10, CHSV(300, 255, 200));
+    shiny_peak(20);
     spiral_falloff(60);
     rgb_running_fill(3, false, 2);
     sparkle(60, CHSV(0, 0, 0), true);
@@ -45,6 +48,25 @@ void loop() {
     rgb_spiral_fill(60, 6, 1);
 }
 
+
+void shiny_peak(uint8_t cycle_count) {
+    gHue = 0;
+    cycle_count = cycle_count * 20; // seconds
+    for (uint8_t i = 0; i < cycle_count; i++) {
+        for (uint8_t j = 0; j < NUM_LEDS; j++) {
+            leds[j] = CHSV(gHue, 255, 50 + j * (205 / NUM_LEDS));
+            FastLED.show();
+            delay(20);
+        }
+        delay(100);
+        for (uint8_t j = NUM_LEDS; j >= 0; --j) {
+            leds[j] = CHSV(0, 0, 0);
+            FastLED.show();
+            delay(20);
+        }
+        gHue = (gHue + 50) % 360;
+    }
+}
 
 void spiral_falloff(uint16_t cycle_time) {
     gHue = 0;
@@ -61,7 +83,7 @@ void spiral_falloff(uint16_t cycle_time) {
         }
         FastLED.show();
         delay(200);
-        gHue = (gHue + 20) % 360;
+        gHue = (gHue + 10) % 360;
     }
 }
 
