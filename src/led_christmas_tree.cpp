@@ -17,14 +17,14 @@ uint16_t gHue = 0;
 void loop() {
     gHue = gHue % 360; // Faster
 
+    rgb_running_fill(3, false, 2);
     sparkle(60, CHSV(0, 0, 0), true);
     rgb_spiral_fill(60, 6, 6);
     rgb_running_fade(60);
-    rgb_running_fill(3, false);
     sparkle(60, CHSV(343, 255, 200), false);
     rgb_spiral_fill(60, 6, 2);
     rgb_fade(60);
-    rgb_running_fill(3, true);
+    rgb_running_fill(3, true, 0);
     rgb_spiral_fill(60, 6, 1);
 }
 
@@ -47,21 +47,27 @@ void rgb_spiral_fill(uint8_t cycle_count, uint8_t colors_count, uint8_t splits_c
     }
 }
 
-void rgb_running_fill(uint8_t cycle_count, boolean colorful) {
+void rgb_running_fill(uint8_t cycle_count, boolean colorful, uint8_t tail_length) {
     gHue = 0;
     for (uint8_t j = 0; j < cycle_count; j++) {
         for (uint8_t n = 0; n < NUM_LEDS; n++) {
-            for (uint8_t i = 0; i < NUM_LEDS - n; i++) {
+            for (uint8_t i = 0; i < NUM_LEDS - n + tail_length; i++) {
                 // Clear tail
-                if (i > 0) leds[i - 1] = CHSV(0, 0, 0);
 
-                leds[i] = CHSV(gHue, 255, 200);
+                if (i < NUM_LEDS - n)
+                    leds[i] = CHSV(gHue, 255, 200);
+
+                for (uint8_t k = 0; k < tail_length; k++) {
+                    if (i - k >= 0 && i < NUM_LEDS - n)
+                        leds[i - k] = CHSV((gHue + k * 30) % 360, 255, 50 + (tail_length - k) * (150 / tail_length));
+                }
+                if (i - tail_length > 0) leds[i - tail_length - 1] = CHSV(0, 0, 0);
 
                 if (i / 2 == 0 || colorful)
                     gHue = (gHue + 1) % 360;
 
                 FastLED.show();
-                delay(100);
+                delay(50);
             }
             FastLED.show();
             delay(500);
