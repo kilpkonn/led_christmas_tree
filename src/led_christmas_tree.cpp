@@ -1,4 +1,5 @@
 #include "FastLED.h"
+
 #define LED_PIN 7
 #define NUM_LEDS 60
 #define LED_TYPE WS2812B
@@ -16,23 +17,30 @@ uint16_t gHue = 0;
 void loop() {
     gHue = gHue % 360; // Faster
 
-    rgb_spiral_fill(3, 6);
-    sparkle(60, true);
+    sparkle(60, CHSV(0, 0, 0), true);
+    rgb_spiral_fill(60, 6, 6);
     rgb_running_fade(60);
     rgb_running_fill(3, false);
-    sparkle(60, false);
+    sparkle(60, CHSV(343, 255, 200), false);
+    rgb_spiral_fill(60, 6, 2);
     rgb_fade(60);
     rgb_running_fill(3, true);
+    rgb_spiral_fill(60, 6, 1);
 }
 
-void rgb_spiral_fill(uint8_t cycle_count, uint8_t colors_count) {
+void rgb_spiral_fill(uint8_t cycle_count, uint8_t colors_count, uint8_t splits_count) {
     gHue = 0;
+    uint8_t split_length = NUM_LEDS / splits_count;
     for (uint8_t i = 0; i < cycle_count; i++) {
         for (uint8_t k = 0; k < colors_count; k++) {
-            for (uint8_t j = 0; j < NUM_LEDS; j++) {
-                leds[j] = CHSV(gHue, 255, 200);
+            for (uint8_t j = 0; j < split_length; j++) {
+                for (uint8_t l = 0; l < splits_count; l++) {
+                    if (j + l * split_length < NUM_LEDS)
+                        leds[j + l * split_length] = CHSV(gHue, 255, 200);
+                }
+                //leds[j] = CHSV(gHue, 255, 200);
                 FastLED.show();
-                delay(20);
+                delay(20 * splits_count);
             }
             gHue = (gHue + 360 / colors_count) % 360;
         }
@@ -61,19 +69,32 @@ void rgb_running_fill(uint8_t cycle_count, boolean colorful) {
     }
 }
 
-void sparkle(uint8_t cycle_count, boolean rgb) {
-    for (uint8_t j = 0; j < cycle_count; j++) {
-        FastLED.clear();
+void sparkle(uint16_t cycle_count, CHSV color, boolean continuous) {
+    uint8_t every_nth = 6;
+    cycle_count = cycle_count * every_nth;
+
+    for (uint16_t j = 0; j < cycle_count; j++) {
+        if (!continuous) {
+            FastLED.clear();
+        } else {
+            for (uint8_t i = 0; i < (NUM_LEDS / every_nth) * 2; i++) {
+                leds[random(NUM_LEDS)] = CHSV(0, 0, 0);
+            }
+        }
         // Every n-th led
-        for(uint8_t i = 0; i < NUM_LEDS / 6; i++) {
-            if (rgb) {
+        for (uint8_t i = 0; i < NUM_LEDS / every_nth; i++) {
+            if (color.hue == 0 && color.saturation == 0 && color.value == 0) {
                 leds[random(NUM_LEDS)] = CHSV(random(360), 255, 200);
             } else {
-                leds[random(NUM_LEDS)] = CRGB(230, 50, 100);
+                leds[random(NUM_LEDS)] = color;
             }
         }
         FastLED.show();
-        delay(1000);
+        if (continuous) {
+            delay(1000 * 3 / every_nth);
+        } else {
+            delay(1000);
+        }
     }
 }
 
@@ -92,8 +113,8 @@ void rgb_fade(uint16_t cycle_time) {
     gHue = 0;
     cycle_time = cycle_time * 50;  // convert to seconds
     for (uint16_t i = 0; i < cycle_time; i++) {
-        uint8_t pos = beatsin16(5,50,150); // generating the sinwave
-        fill_solid(leds, NUM_LEDS, CHSV( gHue, 255, pos));
+        uint8_t pos = beatsin16(5, 50, 150); // generating the sinwave
+        fill_solid(leds, NUM_LEDS, CHSV(gHue, 255, pos));
         FastLED.show();
         gHue = (gHue + 1) % 360;
         delay(100);

@@ -1,5 +1,7 @@
 # LED christmas tree
 
+TODO: pictures
+
 ## How to run:
 
 ### Arduino IDE
@@ -30,5 +32,3 @@ You can now close sketch project you created, no need to save.
     1. I had to remove `<@` and `@>` so it looked like `set(${PROJECT_NAME}_BOARD nano)`  
     2. Add `FastLED` library.
     3. make sure sketch entry point is set `set(${PROJECT_NAME}_SKETCH src/led_christmas_tree.cpp)`
-
-TODO: pictures
