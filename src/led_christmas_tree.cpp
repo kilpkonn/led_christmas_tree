@@ -37,15 +37,17 @@ void loop() {
     //spiral_tail(30, CHSV(300, 255, 200));
     rgb_running_fade(60);
     shiny_peak(20);
+    sparkle(30, CHSV(random(255), 100 + random(155), 200), false);
     spiral_falloff(60);
     rgb_running_fill(3, false, 2);
     sparkle(60, CHSV(0, 0, 0), true);
     rgb_spiral_fill(60, 6, 6);
     rgb_running_fade(60);
-    sparkle(60, CHSV(random(255), 100 + random(155), 200), false);
+    sparkle(30, CHSV(random(255), 100 + random(155), 200), false);
     rgb_spiral_fill(60, 6, 2);
     rgb_fade(60);
     rgb_running_fill(3, true, 0);
+    sparkle(30, CHSV(random(255), 100 + random(155), 200), false);
     rgb_spiral_fill(60, 6, 1);
 }
 
