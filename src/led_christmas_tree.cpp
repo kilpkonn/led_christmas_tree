@@ -13,7 +13,7 @@ void setup() {
     LEDS.addLeds<LED_TYPE, LED_PIN, COLOR_ORDER>(leds, NUM_LEDS);
 }
 
-uint16_t gHue = 0;
+uint8_t gHue = 0;
 
 void rgb_running_fill(uint8_t cycle_count, bool colorful, uint8_t tail_length);
 
@@ -34,16 +34,15 @@ void shiny_peak(uint8_t cycle_count);
 void reset();
 
 void loop() {
-    gHue = gHue % 360; // Faster
-
     //spiral_tail(30, CHSV(300, 255, 200));
+    rgb_running_fade(60);
     shiny_peak(20);
     spiral_falloff(60);
     rgb_running_fill(3, false, 2);
     sparkle(60, CHSV(0, 0, 0), true);
     rgb_spiral_fill(60, 6, 6);
     rgb_running_fade(60);
-    sparkle(60, CHSV(343, 255, 200), false);
+    sparkle(60, CHSV(random(255), 100 + random(155), 200), false);
     rgb_spiral_fill(60, 6, 2);
     rgb_fade(60);
     rgb_running_fill(3, true, 0);
@@ -74,7 +73,7 @@ void shiny_peak(uint8_t cycle_count) {
             FastLED.show();
             delay(20);
         }
-        gHue = (gHue + 50) % 360;
+        gHue += 50;
     }
 }
 
@@ -93,7 +92,7 @@ void spiral_falloff(uint16_t cycle_time) {
         }
         FastLED.show();
         delay(200);
-        gHue = (gHue + 10) % 360;
+        gHue += 10;
     }
 }
 
@@ -144,7 +143,7 @@ void rgb_spiral_fill(uint8_t cycle_count, uint8_t colors_count, uint8_t splits_c
                 FastLED.show();
                 delay(20 * splits_count);
             }
-            gHue = (gHue + 360 / colors_count) % 360;
+            gHue += 255 / colors_count;
         }
     }
 }
@@ -166,7 +165,7 @@ void rgb_running_fill(uint8_t cycle_count, bool colorful, uint8_t tail_length) {
                 if (i - tail_length > 0) leds[i - tail_length - 1] = CHSV(0, 0, 0);
 
                 if (i / 2 == 0 || colorful)
-                    gHue = (gHue + 1) % 360;
+                    gHue++;
 
                 FastLED.show();
                 delay(50);
@@ -193,7 +192,7 @@ void sparkle(uint16_t cycle_count, const CHSV &color, bool continuous) {
         // Every n-th led
         for (uint8_t i = 0; i < NUM_LEDS / every_nth; i++) {
             if (color.hue == 0 && color.saturation == 0 && color.value == 0) {
-                leds[random(NUM_LEDS)] = CHSV(random(360), 255, 200);
+                leds[random(NUM_LEDS)] = CHSV(random(255), 255, 200);
             } else {
                 leds[random(NUM_LEDS)] = color;
             }
@@ -213,7 +212,7 @@ void rgb_running_fade(uint16_t cycle_time) {
     for (uint16_t i = 0; i < cycle_time; i++) {
         fill_rainbow(leds, NUM_LEDS, gHue, 255 / NUM_LEDS);
         FastLED.show();
-        gHue = (gHue + 1) % 360;
+        gHue++;
         delay(20);
     }
 }
@@ -225,7 +224,7 @@ void rgb_fade(uint16_t cycle_time) {
         uint8_t pos = beatsin16(5, 50, 150); // generating the sinwave
         fill_solid(leds, NUM_LEDS, CHSV(gHue, 255, pos));
         FastLED.show();
-        gHue = (gHue + 1) % 360;
+        gHue++;
         delay(100);
     }
 }
