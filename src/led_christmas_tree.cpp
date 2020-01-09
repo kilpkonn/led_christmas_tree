@@ -7,7 +7,6 @@
 
 
 CRGB leds[NUM_LEDS];
-uint8_t layers[5] = {5, 8, 12, 16, 19};
 
 void setup() {
     LEDS.addLeds<LED_TYPE, LED_PIN, COLOR_ORDER>(leds, NUM_LEDS);
@@ -25,8 +24,6 @@ void rgb_running_fade(uint16_t cycle_time);
 
 void rgb_fade(uint16_t cycle_time);
 
-void spiral_tail(uint16_t cycle_time, const CHSV &color);
-
 void spiral_falloff(uint16_t cycle_time);
 
 void shiny_peak(uint8_t cycle_count);
@@ -39,6 +36,7 @@ void loop() {
     shiny_peak(20);
     sparkle(30, CHSV(random(255), 100 + random(155), 200), false);
     spiral_falloff(60);
+    rgb_fade(60);
     rgb_running_fill(3, false, 2);
     sparkle(60, CHSV(0, 0, 0), true);
     rgb_spiral_fill(60, 6, 6);
@@ -46,9 +44,10 @@ void loop() {
     sparkle(30, CHSV(random(255), 100 + random(155), 200), false);
     rgb_spiral_fill(60, 6, 2);
     rgb_fade(60);
-    rgb_running_fill(3, true, 0);
+    rgb_running_fill(2, true, 3);
     sparkle(30, CHSV(random(255), 100 + random(155), 200), false);
     rgb_spiral_fill(60, 6, 1);
+    rgb_fade(60);
 }
 
 
@@ -95,39 +94,6 @@ void spiral_falloff(uint16_t cycle_time) {
         FastLED.show();
         delay(200);
         gHue += 10;
-    }
-}
-
-void spiral_tail(uint16_t cycle_time, const CHSV &color) {
-    reset();
-    cycle_time = cycle_time * 10; // seconds
-    for (uint16_t i = 0; i < cycle_time; i++) {
-        if (random(4) < 2) {
-            leds[NUM_LEDS - random(layers[0]) - 1] = color;
-            FastLED.show();
-            delay(100);
-        }
-        uint8_t leds_before = 1;
-        for (uint8_t layer : layers) {
-            for (uint8_t k = 0; k < layer; k++) {
-                if (NUM_LEDS - leds_before - k < 0) continue;
-
-                /*CRGB led = leds[NUM_LEDS - leds_before - k];
-                if (led.red != 0 && led.green != 0 && led.blue != 0) {
-                    uint8_t random_number = NUM_LEDS - leds_before - k - layer; // - random(3);
-                    if (random_number >= 0)
-                        leds[random_number] = led;
-                } else {
-                    for (uint8_t l = 0; l < 3; l++) {
-                        if (NUM_LEDS - leds_before - k - layer - l >= 0)
-                            leds[NUM_LEDS - leds_before - k - layer - l] = CHSV(0, 0, 0);
-                    }
-                }*/
-                FastLED.show();
-                delay(100);
-            }
-            leds_before += layer;
-        }
     }
 }
 
